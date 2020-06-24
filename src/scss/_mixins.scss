@@ -1,0 +1,129 @@
+@import '_variables.scss';
+
+@mixin logo(){  
+    width: 250px;
+    height: 250px;
+    position: absolute;
+    top: 33%;
+    padding: 4%;
+    left: 47%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 171px;
+    .logo-container{
+        position: absolute;
+        width: inherit;
+        height: inherit;
+        left: 4%;
+        top: 4.5%;
+    .half-circle {
+        width: 380px;
+        height: 200px;
+        border-top-left-radius: 290px;
+        border-top-right-radius: 290px;
+        border: 1px solid #b24b4b;
+        border-bottom: 0;
+        position: absolute;
+        transform: rotate(55deg);
+        top: 5%;
+        left: 20%;
+    }
+    .company-name{
+        top: 53%;
+        position: absolute;
+        left: 41%;
+        h1{         
+            text-align: center;
+            line-height: 1;
+            letter-spacing: -2px;
+            font-weight: lighter;
+            font-size: 2rem;
+            color: $text-color;
+        }
+      }
+    .square-container{
+        position: absolute;
+        top: 19%;
+        left: 17%;
+        .squares{
+            width: 240px;
+            height: 240px;
+            position: absolute;
+            &.sq1{
+                border: 1px solid $prim-color;
+                transform: rotate(50deg);
+    
+               
+            }
+            &.sq2{
+                border: 1px solid $second-color;
+                transform: rotate(45deg);
+               
+            }
+            &.sq3{
+                border: 1px solid $third-color;
+                transform: rotate(40deg); 
+            }
+        }
+    }
+}
+}
+@mixin squares-only($width,$height,$top,$left){
+    .square-container{
+        position: relative;
+        top: $top;
+        left: $top;
+        .squares{
+            width: $width;
+            height: $width;
+            position: absolute;
+            &.sq1{
+                border: 1px solid $prim-color;
+                transform: rotate(50deg);    
+            }
+            &.sq2{
+                border: 1px solid $second-color;
+                transform: rotate(45deg);
+               
+            }
+            &.sq3{
+                border: 1px solid $third-color;
+                transform: rotate(40deg); 
+            }
+        }
+    }
+}
+@mixin seating(){
+    position: relative;
+    z-index: 10;
+    margin: 4rem auto 2rem;
+    width: 700px;
+    background-color: #24242a;
+    padding: 3rem;
+    .seating-container{
+        display:inline-block;
+    }
+    .outer-circle{
+        display: inline-block;
+        list-style: none;
+        text-align: center;
+        border: 1px solid #b24b4b;
+        border-radius: 77px;
+        width: 40px;
+        height: 40px;
+        line-height: 2.2;
+        position: relative;
+        margin:1rem;
+        color: $seat-num;
+
+        .pop-circle{
+            background-color: rgba(217, 152, 44, 0.6);
+            border-radius:100%;
+            position: absolute;
+            left:50%;
+            top:50%;
+            transform: translate(-50%, -50%);
+            z-index: -9999;
+        }
+    }
+}

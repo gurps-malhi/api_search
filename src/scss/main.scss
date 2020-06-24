@@ -1,0 +1,31 @@
+@import "../../node_modules/bootstrap/scss/bootstrap";
+@import "../../node_modules/animate.css/animate";
+@import '_variables.scss';
+@import '_mixins.scss';
+
+
+
+/*styling for the head image and logo - start*/
+.container-fluid{
+    max-width:1420px;
+}
+
+.main_name{
+    font-size:1.5em;
+}
+
+.person span{
+    color:$second-color;
+}
+.person__email a{
+    text-decoration: none;
+    color:$dark-color;
+}
+.person__header{
+    height:300px;
+    overflow:hidden;
+}
+hr{
+    color:$dark-color;
+    border-top:1px solid $dark-color;
+}
