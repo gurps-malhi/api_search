@@ -7,5 +7,5 @@ using randomuser api to filter searches
 Use the package manager parcel to install project, once all the dep have been installed.
 
 ```bash
-run npm dev
+npm run dev
 ```
