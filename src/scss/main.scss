@@ -29,3 +29,7 @@ hr{
     color:$dark-color;
     border-top:1px solid $dark-color;
 }
+
+[v-cloak] {
+    display: none;
+  }

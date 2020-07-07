@@ -12977,4 +12977,8 @@ hr {
   border-top: 1px solid #000;
 }
 
+[v-cloak] {
+  display: none;
+}
+
 /*# sourceMappingURL=/main.77bb5cfd.css.map */

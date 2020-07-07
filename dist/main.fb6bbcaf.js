@@ -27024,6 +27024,7 @@ exports.default = void 0;
 //
 //
 //
+//
 var _default = {
   name: 'App',
   data: function data() {
@@ -27032,7 +27033,7 @@ var _default = {
       age_groups: [],
       search_name: "",
       search_age: -1,
-      search_gen: "none",
+      search_gen: "all-gen",
       filtered_prof: [],
       num_results: 0
     };
@@ -27042,34 +27043,57 @@ var _default = {
       var _this = this;
 
       $.ajax({
-        url: 'https://randomuser.me/api/?results=200',
+        url: 'https://randomuser.me/api/?results=50',
         dataType: 'json',
         success: function success(data) {
-          var $profiles_api = data.results;
-          _this.profiles = $profiles_api;
+          _this.profiles = data.results;
         },
-        error: function error(xhr) {
-          alert("error in returning result");
+        error: function error(request, status, _error) {
+          alert(status);
         }
       });
     },
+    age_range: function age_range(filt_group_tot, inc_by) {
+      var start_no = 0;
+      var end_no = 0;
+
+      for (var i = 0; i < filt_group_tot; i++) {
+        end_no = start_no + inc_by;
+        this.age_groups.push(start_no + "-" + end_no);
+        start_no = start_no + inc_by;
+      }
+
+      return this.age_groups;
+    },
+    reset: function reset() {
+      this.search_age = -1;
+      this.search_name = " ";
+      this.search_gen = "all-gen";
+      this.new_results();
+    },
     new_results: function new_results() {
-      var name = "";
       var start_no = 0;
       var end_no = 0;
       var first_name,
-          last_name = "";
+          last_name,
+          full_name = "";
+      var has_name;
       this.filtered_prof = [];
+
+      if (typeof this.search_age !== "number") {
+        var str = this.search_age;
+        str = str.split("-");
+        start_no = str[0];
+        end_no = str[1];
+      }
 
       for (var i = 0; i < this.profiles.length; i++) {
         first_name = this.profiles[i].name.first.toLowerCase();
         last_name = this.profiles[i].name.last.toLowerCase();
-        name = first_name + " " + last_name;
-        name = name.includes(this.search_name);
-        start_no = this.search_age * 10;
-        end_no = start_no + 10;
+        full_name = first_name + " " + last_name;
+        has_name = full_name.includes(this.search_name);
 
-        if ((name || this.search_name == "") && (this.profiles[i].gender == this.search_gen || this.search_gen == "none") && (this.profiles[i].dob.age >= start_no && this.profiles[i].dob.age <= end_no || this.search_age == -1)) {
+        if ((has_name || this.search_name == "") && (this.profiles[i].gender == this.search_gen || this.search_gen == "all-gen") && (this.profiles[i].dob.age >= start_no && this.profiles[i].dob.age <= end_no || this.search_age == -1)) {
           this.filtered_prof.push(this.profiles[i]);
         }
       }
@@ -27077,21 +27101,15 @@ var _default = {
       this.num_results = this.filtered_prof.length;
     }
   },
-  computed: {},
   mounted: function mounted() {
     this.load_profiles();
-    var filt_group_tot = 5;
-    var start_no = 0;
-    var end_no = 0;
-    var inc_by = 10;
-
-    for (var i = 0; i < filt_group_tot; i++) {
-      end_no = start_no + inc_by;
-      this.age_groups.push(start_no + "-" + end_no);
-      start_no = start_no + inc_by;
-    }
+    this.age_range(5, 10);
   },
-  updated: function updated() {}
+  watch: {
+    profiles: function profiles(val) {
+      this.new_results();
+    }
+  }
 };
 exports.default = _default;
         var $6c44b4 = exports.default || module.exports;
@@ -27111,136 +27129,207 @@ exports.default = _default;
       _c("div", { staticClass: "col-12 col-md-4" }, [
         _c("h2", [_vm._v("Refine")]),
         _vm._v(" "),
-        _c("form", [
-          _c("div", { staticClass: "form-group" }, [
-            _vm._m(0),
+        _c(
+          "form",
+          {
+            on: {
+              submit: function($event) {
+                $event.preventDefault()
+              }
+            }
+          },
+          [
+            _c("div", { staticClass: "form-group" }, [
+              _vm._m(0),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.search_name,
+                    expression: "search_name"
+                  }
+                ],
+                staticClass: "form-control",
+                attrs: { name: "Name", type: "text" },
+                domProps: { value: _vm.search_name },
+                on: {
+                  blur: function($event) {
+                    return _vm.new_results()
+                  },
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.search_name = $event.target.value
+                  }
+                }
+              })
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "form-group" }, [
+              _vm._m(1),
+              _vm._v(" "),
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.search_age,
+                      expression: "search_age"
+                    }
+                  ],
+                  staticClass: "form-control",
+                  attrs: { name: "gender", id: "age" },
+                  on: {
+                    change: [
+                      function($event) {
+                        var $$selectedVal = Array.prototype.filter
+                          .call($event.target.options, function(o) {
+                            return o.selected
+                          })
+                          .map(function(o) {
+                            var val = "_value" in o ? o._value : o.value
+                            return val
+                          })
+                        _vm.search_age = $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      },
+                      function($event) {
+                        return _vm.new_results()
+                      }
+                    ]
+                  }
+                },
+                [
+                  _c("option", { domProps: { value: -1 } }, [
+                    _vm._v("All age groups")
+                  ]),
+                  _vm._v(" "),
+                  _vm._l(_vm.age_groups, function(age_range, index) {
+                    return _c(
+                      "option",
+                      { key: index, domProps: { value: age_range } },
+                      [_vm._v(_vm._s(age_range))]
+                    )
+                  })
+                ],
+                2
+              )
+            ]),
+            _vm._v(" "),
+            _vm._m(2),
             _vm._v(" "),
             _c("input", {
               directives: [
                 {
                   name: "model",
                   rawName: "v-model",
-                  value: _vm.search_name,
-                  expression: "search_name"
+                  value: _vm.search_gen,
+                  expression: "search_gen"
                 }
               ],
-              staticClass: "form-control",
-              attrs: { name: "Name", type: "text" },
-              domProps: { value: _vm.search_name },
-              on: {
-                input: function($event) {
-                  if ($event.target.composing) {
-                    return
-                  }
-                  _vm.search_name = $event.target.value
-                }
-              }
-            })
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "form-group" }, [
-            _vm._m(1),
-            _vm._v(" "),
-            _c(
-              "select",
-              {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.search_age,
-                    expression: "search_age"
-                  }
-                ],
-                staticClass: "form-control",
-                attrs: { name: "gender", id: "age" },
-                on: {
-                  change: function($event) {
-                    var $$selectedVal = Array.prototype.filter
-                      .call($event.target.options, function(o) {
-                        return o.selected
-                      })
-                      .map(function(o) {
-                        var val = "_value" in o ? o._value : o.value
-                        return val
-                      })
-                    _vm.search_age = $event.target.multiple
-                      ? $$selectedVal
-                      : $$selectedVal[0]
-                  }
-                }
+              attrs: {
+                type: "radio",
+                id: "male",
+                name: "gender",
+                value: "male"
               },
-              _vm._l(_vm.age_groups, function(age_range, index) {
-                return _c(
-                  "option",
-                  { key: index, domProps: { value: index } },
-                  [_vm._v(_vm._s(age_range))]
-                )
-              }),
-              0
-            )
-          ]),
-          _vm._v(" "),
-          _vm._m(2),
-          _vm._v(" "),
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.search_gen,
-                expression: "search_gen"
+              domProps: { checked: _vm._q(_vm.search_gen, "male") },
+              on: {
+                change: [
+                  function($event) {
+                    _vm.search_gen = "male"
+                  },
+                  function($event) {
+                    return _vm.new_results()
+                  }
+                ]
               }
-            ],
-            attrs: { type: "radio", id: "male", name: "gender", value: "male" },
-            domProps: { checked: _vm._q(_vm.search_gen, "male") },
-            on: {
-              change: function($event) {
-                _vm.search_gen = "male"
+            }),
+            _vm._v(" "),
+            _c("label", { attrs: { for: "male" } }, [_vm._v("Male")]),
+            _c("br"),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.search_gen,
+                  expression: "search_gen"
+                }
+              ],
+              attrs: {
+                type: "radio",
+                id: "female",
+                name: "gender",
+                value: "female"
+              },
+              domProps: { checked: _vm._q(_vm.search_gen, "female") },
+              on: {
+                change: [
+                  function($event) {
+                    _vm.search_gen = "female"
+                  },
+                  function($event) {
+                    return _vm.new_results()
+                  }
+                ]
               }
-            }
-          }),
-          _vm._v(" "),
-          _c("label", { attrs: { for: "male" } }, [_vm._v("Male")]),
-          _c("br"),
-          _vm._v(" "),
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.search_gen,
-                expression: "search_gen"
+            }),
+            _vm._v(" "),
+            _c("label", { attrs: { for: "female" } }, [_vm._v("Female")]),
+            _c("br"),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.search_gen,
+                  expression: "search_gen"
+                }
+              ],
+              attrs: {
+                type: "radio",
+                id: "all-gen",
+                name: "gender",
+                value: "all-gen"
+              },
+              domProps: { checked: _vm._q(_vm.search_gen, "all-gen") },
+              on: {
+                change: [
+                  function($event) {
+                    _vm.search_gen = "all-gen"
+                  },
+                  function($event) {
+                    return _vm.new_results()
+                  }
+                ]
               }
-            ],
-            attrs: {
-              type: "radio",
-              id: "female",
-              name: "gender",
-              value: "female"
-            },
-            domProps: { checked: _vm._q(_vm.search_gen, "female") },
-            on: {
-              change: function($event) {
-                _vm.search_gen = "female"
-              }
-            }
-          }),
-          _vm._v(" "),
-          _c("label", { attrs: { for: "female" } }, [_vm._v("Female")]),
-          _c("br")
-        ]),
+            }),
+            _vm._v(" "),
+            _c("label", { attrs: { for: "all-gen" } }, [_vm._v("All genders")]),
+            _c("br")
+          ]
+        ),
         _vm._v(" "),
         _c(
           "button",
           {
+            staticClass: "btn btn-primary",
             on: {
               click: function($event) {
-                return _vm.new_results()
+                return _vm.reset()
               }
             }
           },
-          [_vm._v("Search")]
+          [_vm._v("Reset")]
         )
       ]),
       _vm._v(" "),
@@ -27254,76 +27343,118 @@ exports.default = _default;
             )
           ]),
           _vm._v(" "),
-          _c(
-            "transition-group",
-            { staticClass: "row more", attrs: { name: "fade", tag: "div" } },
-            _vm._l(_vm.filtered_prof, function(prof, key) {
-              return _c("div", { key: key, staticClass: "col-12 col-md-6" }, [
-                _c("div", { staticClass: "prof my-2" }, [
-                  _c("div", { staticClass: "person__header" }, [
-                    _c("img", {
-                      staticClass: "img-fluid w-100",
-                      attrs: {
-                        src: prof.picture.large,
-                        alt: prof.name.first + " " + prof.name.last
-                      }
-                    })
-                  ]),
-                  _vm._v(" "),
-                  _c(
+          _vm.num_results > 0
+            ? _c(
+                "transition-group",
+                {
+                  staticClass: "row more",
+                  attrs: { name: "fade", tag: "div" }
+                },
+                _vm._l(_vm.filtered_prof, function(prof, key) {
+                  return _c(
                     "div",
-                    { staticClass: "person__name font-weight-bold mt-2" },
+                    { key: key, staticClass: "col-12 col-md-6" },
                     [
-                      _c("h2", { staticClass: "main_name" }, [
-                        _vm._v(
-                          _vm._s(prof.name.first) + " " + _vm._s(prof.name.last)
-                        )
+                      _c("div", { staticClass: "prof my-2" }, [
+                        _c("div", { staticClass: "person__header" }, [
+                          _c("img", {
+                            staticClass: "img-fluid w-100",
+                            attrs: {
+                              src: prof.picture.large,
+                              alt: prof.name.first + " " + prof.name.last
+                            }
+                          })
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "div",
+                          { staticClass: "person__name font-weight-bold mt-2" },
+                          [
+                            _c("h2", { staticClass: "main_name" }, [
+                              _vm._v(
+                                _vm._s(prof.name.first) +
+                                  " " +
+                                  _vm._s(prof.name.last)
+                              )
+                            ])
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "div",
+                          {
+                            staticClass:
+                              "font-weight-bold person__age font-weight-normal person"
+                          },
+                          [
+                            _c("span", [_vm._v("Age:")]),
+                            _vm._v(
+                              " " + _vm._s(prof.dob.age) + "\n            "
+                            )
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "div",
+                          {
+                            staticClass:
+                              "font-weight-bold person__gen font-weight-normal person"
+                          },
+                          [
+                            _c("span", [_vm._v("Gender:")]),
+                            _vm._v(" " + _vm._s(prof.gender) + "\n            ")
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "div",
+                          {
+                            staticClass: "font-weight-bold person__email person"
+                          },
+                          [
+                            _c("span", [_vm._v("Email:")]),
+                            _vm._v(" "),
+                            _c(
+                              "a",
+                              { attrs: { href: "mailto:" + prof.email } },
+                              [_vm._v(_vm._s(prof.email))]
+                            )
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "person__map" }, [
+                          _c("iframe", {
+                            attrs: {
+                              width: "100%",
+                              height: "170",
+                              frameborder: "0",
+                              scrolling: "no",
+                              marginheight: "0",
+                              marginwidth: "0",
+                              src:
+                                "https://maps.google.com/maps?q=" +
+                                prof.location.coordinates.latitude +
+                                "," +
+                                prof.location.coordinates.longitude +
+                                "&z=7&output=embed"
+                            }
+                          })
+                        ]),
+                        _vm._v(" "),
+                        _c("hr", { staticClass: "m-0 mt-2" })
                       ])
                     ]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "div",
-                    {
-                      staticClass:
-                        "font-weight-bold person__age font-weight-normal person"
-                    },
-                    [
-                      _c("span", [_vm._v("Age:")]),
-                      _vm._v(" " + _vm._s(prof.dob.age) + "\n            ")
-                    ]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "div",
-                    {
-                      staticClass:
-                        "font-weight-bold person__gen font-weight-normal person"
-                    },
-                    [
-                      _c("span", [_vm._v("Gender:")]),
-                      _vm._v(" " + _vm._s(prof.gender) + "\n            ")
-                    ]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "div",
-                    { staticClass: "font-weight-bold person__email person" },
-                    [
-                      _c("span", [_vm._v("Email:")]),
-                      _vm._v(" "),
-                      _c("a", { attrs: { href: "mailto:" + prof.email } }, [
-                        _vm._v(_vm._s(prof.email))
-                      ])
-                    ]
-                  ),
-                  _vm._v(" "),
-                  _c("hr", { staticClass: "m-0 mt-2" })
+                  )
+                }),
+                0
+              )
+            : _c("div", { staticClass: "text-center mt-5" }, [
+                _c("h1", [
+                  _vm._v(
+                    "Unfortunately, no results were found, please change search critera."
+                  )
                 ])
               ])
-            }),
-            0
-          )
         ],
         1
       )
@@ -27435,7 +27566,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51132" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50017" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
