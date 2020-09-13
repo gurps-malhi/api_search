@@ -27133,7 +27133,7 @@ exports.default = _default;
           "form",
           {
             on: {
-              submit: function($event) {
+              ":submit": function($event) {
                 $event.preventDefault()
               }
             }
@@ -27155,9 +27155,7 @@ exports.default = _default;
                 attrs: { name: "Name", type: "text" },
                 domProps: { value: _vm.search_name },
                 on: {
-                  blur: function($event) {
-                    return _vm.new_results()
-                  },
+                  blur: _vm.new_results,
                   input: function($event) {
                     if ($event.target.composing) {
                       return
@@ -27199,9 +27197,7 @@ exports.default = _default;
                           ? $$selectedVal
                           : $$selectedVal[0]
                       },
-                      function($event) {
-                        return _vm.new_results()
-                      }
+                      _vm.new_results
                     ]
                   }
                 },
@@ -27245,9 +27241,7 @@ exports.default = _default;
                   function($event) {
                     _vm.search_gen = "male"
                   },
-                  function($event) {
-                    return _vm.new_results()
-                  }
+                  _vm.new_results
                 ]
               }
             }),
@@ -27276,9 +27270,7 @@ exports.default = _default;
                   function($event) {
                     _vm.search_gen = "female"
                   },
-                  function($event) {
-                    return _vm.new_results()
-                  }
+                  _vm.new_results
                 ]
               }
             }),
@@ -27307,9 +27299,7 @@ exports.default = _default;
                   function($event) {
                     _vm.search_gen = "all-gen"
                   },
-                  function($event) {
-                    return _vm.new_results()
-                  }
+                  _vm.new_results
                 ]
               }
             }),
@@ -27321,14 +27311,7 @@ exports.default = _default;
         _vm._v(" "),
         _c(
           "button",
-          {
-            staticClass: "btn btn-primary",
-            on: {
-              click: function($event) {
-                return _vm.reset()
-              }
-            }
-          },
+          { staticClass: "btn btn-primary", on: { click: _vm.reset } },
           [_vm._v("Reset")]
         )
       ]),
@@ -27566,7 +27549,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50017" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54054" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
