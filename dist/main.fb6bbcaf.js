@@ -26677,7 +26677,74 @@ if (inBrowser) {
 
 var _default = Vue;
 exports.default = _default;
-},{}],"../node_modules/vue-hot-reload-api/dist/index.js":[function(require,module,exports) {
+},{}],"../node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
+var bundleURL = null;
+
+function getBundleURLCached() {
+  if (!bundleURL) {
+    bundleURL = getBundleURL();
+  }
+
+  return bundleURL;
+}
+
+function getBundleURL() {
+  // Attempt to find the URL of the current script and use that as the base URL
+  try {
+    throw new Error();
+  } catch (err) {
+    var matches = ('' + err.stack).match(/(https?|file|ftp|chrome-extension|moz-extension):\/\/[^)\n]+/g);
+
+    if (matches) {
+      return getBaseURL(matches[0]);
+    }
+  }
+
+  return '/';
+}
+
+function getBaseURL(url) {
+  return ('' + url).replace(/^((?:https?|file|ftp|chrome-extension|moz-extension):\/\/.+)\/[^/]+$/, '$1') + '/';
+}
+
+exports.getBundleURL = getBundleURLCached;
+exports.getBaseURL = getBaseURL;
+},{}],"../node_modules/parcel-bundler/src/builtins/css-loader.js":[function(require,module,exports) {
+var bundle = require('./bundle-url');
+
+function updateLink(link) {
+  var newLink = link.cloneNode();
+
+  newLink.onload = function () {
+    link.remove();
+  };
+
+  newLink.href = link.href.split('?')[0] + '?' + Date.now();
+  link.parentNode.insertBefore(newLink, link.nextSibling);
+}
+
+var cssTimeout = null;
+
+function reloadCSS() {
+  if (cssTimeout) {
+    return;
+  }
+
+  cssTimeout = setTimeout(function () {
+    var links = document.querySelectorAll('link[rel="stylesheet"]');
+
+    for (var i = 0; i < links.length; i++) {
+      if (bundle.getBaseURL(links[i].href) === bundle.getBundleURL()) {
+        updateLink(links[i]);
+      }
+    }
+
+    cssTimeout = null;
+  }, 50);
+}
+
+module.exports = reloadCSS;
+},{"./bundle-url":"../node_modules/parcel-bundler/src/builtins/bundle-url.js"}],"../node_modules/vue-hot-reload-api/dist/index.js":[function(require,module,exports) {
 var Vue // late bind
 var version
 var map = Object.create(null)
@@ -26952,7 +27019,7 @@ function patchScopedSlots (instance) {
   }
 }
 
-},{}],"js/App.vue":[function(require,module,exports) {
+},{}],"components/filterForm.vue":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27025,11 +27092,47 @@ exports.default = void 0;
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 var _default = {
-  name: 'App',
+  props: ['profiles'],
   data: function data() {
     return {
-      profiles: [],
       age_groups: [],
       search_name: "",
       search_age: -1,
@@ -27039,20 +27142,6 @@ var _default = {
     };
   },
   methods: {
-    load_profiles: function load_profiles() {
-      var _this = this;
-
-      $.ajax({
-        url: 'https://randomuser.me/api/?results=50',
-        dataType: 'json',
-        success: function success(data) {
-          _this.profiles = data.results;
-        },
-        error: function error(request, status, _error) {
-          alert(status);
-        }
-      });
-    },
     age_range: function age_range(filt_group_tot, inc_by) {
       var start_no = 0;
       var end_no = 0;
@@ -27102,7 +27191,6 @@ var _default = {
     }
   },
   mounted: function mounted() {
-    this.load_profiles();
     this.age_range(5, 10);
   },
   watch: {
@@ -27112,336 +27200,311 @@ var _default = {
   }
 };
 exports.default = _default;
-        var $6c44b4 = exports.default || module.exports;
+        var $5bff0e = exports.default || module.exports;
       
-      if (typeof $6c44b4 === 'function') {
-        $6c44b4 = $6c44b4.options;
+      if (typeof $5bff0e === 'function') {
+        $5bff0e = $5bff0e.options;
       }
     
         /* template */
-        Object.assign($6c44b4, (function () {
+        Object.assign($5bff0e, (function () {
           var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container-fluid" }, [
-    _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-12 col-md-4" }, [
-        _c("h2", [_vm._v("Refine")]),
-        _vm._v(" "),
-        _c(
-          "form",
-          {
-            on: {
-              ":submit": function($event) {
-                $event.preventDefault()
-              }
+  return _c("div", { staticClass: "row" }, [
+    _c("div", { staticClass: "col-12 col-md-4" }, [
+      _c("h2", [_vm._v("Refine")]),
+      _vm._v(" "),
+      _c(
+        "form",
+        {
+          on: {
+            ":submit": function($event) {
+              $event.preventDefault()
             }
-          },
-          [
-            _c("div", { staticClass: "form-group" }, [
-              _vm._m(0),
-              _vm._v(" "),
-              _c("input", {
+          }
+        },
+        [
+          _c("div", { staticClass: "form-group" }, [
+            _vm._m(0),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.search_name,
+                  expression: "search_name"
+                }
+              ],
+              staticClass: "form-control",
+              attrs: { name: "Name", type: "text" },
+              domProps: { value: _vm.search_name },
+              on: {
+                blur: _vm.new_results,
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.search_name = $event.target.value
+                }
+              }
+            })
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "form-group" }, [
+            _vm._m(1),
+            _vm._v(" "),
+            _c(
+              "select",
+              {
                 directives: [
                   {
                     name: "model",
                     rawName: "v-model",
-                    value: _vm.search_name,
-                    expression: "search_name"
+                    value: _vm.search_age,
+                    expression: "search_age"
                   }
                 ],
                 staticClass: "form-control",
-                attrs: { name: "Name", type: "text" },
-                domProps: { value: _vm.search_name },
+                attrs: { name: "gender", id: "age" },
                 on: {
-                  blur: _vm.new_results,
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.search_name = $event.target.value
-                  }
+                  change: [
+                    function($event) {
+                      var $$selectedVal = Array.prototype.filter
+                        .call($event.target.options, function(o) {
+                          return o.selected
+                        })
+                        .map(function(o) {
+                          var val = "_value" in o ? o._value : o.value
+                          return val
+                        })
+                      _vm.search_age = $event.target.multiple
+                        ? $$selectedVal
+                        : $$selectedVal[0]
+                    },
+                    _vm.new_results
+                  ]
                 }
-              })
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "form-group" }, [
-              _vm._m(1),
-              _vm._v(" "),
-              _c(
-                "select",
-                {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.search_age,
-                      expression: "search_age"
-                    }
-                  ],
-                  staticClass: "form-control",
-                  attrs: { name: "gender", id: "age" },
-                  on: {
-                    change: [
-                      function($event) {
-                        var $$selectedVal = Array.prototype.filter
-                          .call($event.target.options, function(o) {
-                            return o.selected
-                          })
-                          .map(function(o) {
-                            var val = "_value" in o ? o._value : o.value
-                            return val
-                          })
-                        _vm.search_age = $event.target.multiple
-                          ? $$selectedVal
-                          : $$selectedVal[0]
-                      },
-                      _vm.new_results
+              },
+              [
+                _c("option", { domProps: { value: -1 } }, [
+                  _vm._v("All age groups")
+                ]),
+                _vm._v(" "),
+                _vm._l(_vm.age_groups, function(age_group, index) {
+                  return _c(
+                    "option",
+                    { key: index, domProps: { value: age_group } },
+                    [
+                      _vm._v(
+                        "\r\n              " +
+                          _vm._s(age_group) +
+                          "\r\n            "
+                      )
                     ]
-                  }
-                },
-                [
-                  _c("option", { domProps: { value: -1 } }, [
-                    _vm._v("All age groups")
-                  ]),
-                  _vm._v(" "),
-                  _vm._l(_vm.age_groups, function(age_range, index) {
-                    return _c(
-                      "option",
-                      { key: index, domProps: { value: age_range } },
-                      [_vm._v(_vm._s(age_range))]
-                    )
-                  })
-                ],
-                2
-              )
-            ]),
-            _vm._v(" "),
-            _vm._m(2),
-            _vm._v(" "),
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.search_gen,
-                  expression: "search_gen"
-                }
+                  )
+                })
               ],
-              attrs: {
-                type: "radio",
-                id: "male",
-                name: "gender",
-                value: "male"
-              },
-              domProps: { checked: _vm._q(_vm.search_gen, "male") },
-              on: {
-                change: [
-                  function($event) {
-                    _vm.search_gen = "male"
-                  },
-                  _vm.new_results
-                ]
-              }
-            }),
-            _vm._v(" "),
-            _c("label", { attrs: { for: "male" } }, [_vm._v("Male")]),
-            _c("br"),
-            _vm._v(" "),
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.search_gen,
-                  expression: "search_gen"
-                }
-              ],
-              attrs: {
-                type: "radio",
-                id: "female",
-                name: "gender",
-                value: "female"
-              },
-              domProps: { checked: _vm._q(_vm.search_gen, "female") },
-              on: {
-                change: [
-                  function($event) {
-                    _vm.search_gen = "female"
-                  },
-                  _vm.new_results
-                ]
-              }
-            }),
-            _vm._v(" "),
-            _c("label", { attrs: { for: "female" } }, [_vm._v("Female")]),
-            _c("br"),
-            _vm._v(" "),
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.search_gen,
-                  expression: "search_gen"
-                }
-              ],
-              attrs: {
-                type: "radio",
-                id: "all-gen",
-                name: "gender",
-                value: "all-gen"
-              },
-              domProps: { checked: _vm._q(_vm.search_gen, "all-gen") },
-              on: {
-                change: [
-                  function($event) {
-                    _vm.search_gen = "all-gen"
-                  },
-                  _vm.new_results
-                ]
-              }
-            }),
-            _vm._v(" "),
-            _c("label", { attrs: { for: "all-gen" } }, [_vm._v("All genders")]),
-            _c("br")
-          ]
-        ),
-        _vm._v(" "),
-        _c(
-          "button",
-          { staticClass: "btn btn-primary", on: { click: _vm.reset } },
-          [_vm._v("Reset")]
-        )
-      ]),
-      _vm._v(" "),
-      _c(
-        "div",
-        { staticClass: "col-12 col-md-8" },
-        [
-          _c("div", { staticClass: "prof_number font-weight-bold mb-2" }, [
-            _vm._v(
-              "\n          " + _vm._s(_vm.num_results) + " Results\n        "
+              2
             )
           ]),
           _vm._v(" "),
-          _vm.num_results > 0
-            ? _c(
-                "transition-group",
-                {
-                  staticClass: "row more",
-                  attrs: { name: "fade", tag: "div" }
+          _vm._m(2),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.search_gen,
+                expression: "search_gen"
+              }
+            ],
+            attrs: { type: "radio", id: "male", name: "gender", value: "male" },
+            domProps: { checked: _vm._q(_vm.search_gen, "male") },
+            on: {
+              change: [
+                function($event) {
+                  _vm.search_gen = "male"
                 },
-                _vm._l(_vm.filtered_prof, function(prof, key) {
-                  return _c(
-                    "div",
-                    { key: key, staticClass: "col-12 col-md-6" },
-                    [
-                      _c("div", { staticClass: "prof my-2" }, [
-                        _c("div", { staticClass: "person__header" }, [
-                          _c("img", {
-                            staticClass: "img-fluid w-100",
-                            attrs: {
-                              src: prof.picture.large,
-                              alt: prof.name.first + " " + prof.name.last
-                            }
-                          })
-                        ]),
-                        _vm._v(" "),
-                        _c(
-                          "div",
-                          { staticClass: "person__name font-weight-bold mt-2" },
-                          [
-                            _c("h2", { staticClass: "main_name" }, [
-                              _vm._v(
-                                _vm._s(prof.name.first) +
-                                  " " +
-                                  _vm._s(prof.name.last)
-                              )
-                            ])
-                          ]
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "div",
-                          {
-                            staticClass:
-                              "font-weight-bold person__age font-weight-normal person"
-                          },
-                          [
-                            _c("span", [_vm._v("Age:")]),
-                            _vm._v(
-                              " " + _vm._s(prof.dob.age) + "\n            "
-                            )
-                          ]
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "div",
-                          {
-                            staticClass:
-                              "font-weight-bold person__gen font-weight-normal person"
-                          },
-                          [
-                            _c("span", [_vm._v("Gender:")]),
-                            _vm._v(" " + _vm._s(prof.gender) + "\n            ")
-                          ]
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "div",
-                          {
-                            staticClass: "font-weight-bold person__email person"
-                          },
-                          [
-                            _c("span", [_vm._v("Email:")]),
-                            _vm._v(" "),
-                            _c(
-                              "a",
-                              { attrs: { href: "mailto:" + prof.email } },
-                              [_vm._v(_vm._s(prof.email))]
-                            )
-                          ]
-                        ),
-                        _vm._v(" "),
-                        _c("div", { staticClass: "person__map" }, [
-                          _c("iframe", {
-                            attrs: {
-                              width: "100%",
-                              height: "170",
-                              frameborder: "0",
-                              scrolling: "no",
-                              marginheight: "0",
-                              marginwidth: "0",
-                              src:
-                                "https://maps.google.com/maps?q=" +
-                                prof.location.coordinates.latitude +
-                                "," +
-                                prof.location.coordinates.longitude +
-                                "&z=7&output=embed"
-                            }
-                          })
-                        ]),
-                        _vm._v(" "),
-                        _c("hr", { staticClass: "m-0 mt-2" })
-                      ])
-                    ]
-                  )
-                }),
-                0
-              )
-            : _c("div", { staticClass: "text-center mt-5" }, [
-                _c("h1", [
-                  _vm._v(
-                    "Unfortunately, no results were found, please change search critera."
-                  )
-                ])
-              ])
-        ],
-        1
+                _vm.new_results
+              ]
+            }
+          }),
+          _vm._v(" "),
+          _c("label", { attrs: { for: "male" } }, [_vm._v("Male")]),
+          _c("br"),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.search_gen,
+                expression: "search_gen"
+              }
+            ],
+            attrs: {
+              type: "radio",
+              id: "female",
+              name: "gender",
+              value: "female"
+            },
+            domProps: { checked: _vm._q(_vm.search_gen, "female") },
+            on: {
+              change: [
+                function($event) {
+                  _vm.search_gen = "female"
+                },
+                _vm.new_results
+              ]
+            }
+          }),
+          _vm._v(" "),
+          _c("label", { attrs: { for: "female" } }, [_vm._v("Female")]),
+          _c("br"),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.search_gen,
+                expression: "search_gen"
+              }
+            ],
+            attrs: {
+              type: "radio",
+              id: "all-gen",
+              name: "gender",
+              value: "all-gen"
+            },
+            domProps: { checked: _vm._q(_vm.search_gen, "all-gen") },
+            on: {
+              change: [
+                function($event) {
+                  _vm.search_gen = "all-gen"
+                },
+                _vm.new_results
+              ]
+            }
+          }),
+          _vm._v(" "),
+          _c("label", { attrs: { for: "all-gen" } }, [_vm._v("All genders")]),
+          _c("br")
+        ]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        { staticClass: "btn btn-primary", on: { click: _vm.reset } },
+        [_vm._v("Reset")]
       )
-    ])
+    ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "col-12 col-md-8" },
+      [
+        _c("div", { staticClass: "prof_number font-weight-bold mb-2" }, [
+          _vm._v(
+            "\r\n            " +
+              _vm._s(_vm.num_results) +
+              " of " +
+              _vm._s(_vm.profiles.length) +
+              "\r\n          "
+          )
+        ]),
+        _vm._v(" "),
+        _vm.num_results > 0
+          ? _c(
+              "transition-group",
+              { staticClass: "row more", attrs: { name: "fade", tag: "div" } },
+              _vm._l(_vm.filtered_prof, function(prof, key) {
+                return _c("div", { key: key, staticClass: "col-12 col-md-6" }, [
+                  _c("div", { staticClass: "prof my-2" }, [
+                    _c("div", { staticClass: "person__header" }, [
+                      _c("img", {
+                        staticClass: "img-fluid w-100",
+                        attrs: {
+                          src: prof.picture.large,
+                          alt: prof.name.first + " " + prof.name.last
+                        }
+                      })
+                    ]),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "person__name font-weight-bold mt-2" },
+                      [
+                        _c("h2", { staticClass: "main_name" }, [
+                          _vm._v(
+                            _vm._s(prof.name.first) +
+                              " " +
+                              _vm._s(prof.name.last)
+                          )
+                        ])
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      {
+                        staticClass:
+                          "font-weight-bold person__age font-weight-normal person"
+                      },
+                      [
+                        _c("span", [_vm._v("Age:")]),
+                        _vm._v(
+                          " " + _vm._s(prof.dob.age) + "\r\n              "
+                        )
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      {
+                        staticClass:
+                          "font-weight-bold person__gen font-weight-normal person"
+                      },
+                      [
+                        _c("span", [_vm._v("Gender:")]),
+                        _vm._v(" " + _vm._s(prof.gender) + "\r\n              ")
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "font-weight-bold person__email person" },
+                      [
+                        _c("span", [_vm._v("Email:")]),
+                        _vm._v(" "),
+                        _c("a", { attrs: { href: "mailto:" + prof.email } }, [
+                          _vm._v(_vm._s(prof.email))
+                        ])
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "person__map" }),
+                    _vm._v(" "),
+                    _c("hr", { staticClass: "m-0 mt-2" })
+                  ])
+                ])
+              }),
+              0
+            )
+          : _c("div", { staticClass: "text-center mt-5" }, [
+              _c("h1", [
+                _vm._v(
+                  "Unfortunately, no results were found, please change search critera."
+                )
+              ])
+            ])
+      ],
+      1
+    )
   ])
 }
 var staticRenderFns = [
@@ -27489,6 +27552,160 @@ render._withStripped = true
         if (api.compatible) {
           module.hot.accept();
           if (!module.hot.data) {
+            api.createRecord('$5bff0e', $5bff0e);
+          } else {
+            api.reload('$5bff0e', $5bff0e);
+          }
+        }
+
+        
+        var reloadCSS = require('_css_loader');
+        module.hot.dispose(reloadCSS);
+        module.hot.accept(reloadCSS);
+      
+      }
+    })();
+},{"_css_loader":"../node_modules/parcel-bundler/src/builtins/css-loader.js","vue-hot-reload-api":"../node_modules/vue-hot-reload-api/dist/index.js","vue":"../node_modules/vue/dist/vue.runtime.esm.js"}],"js/App.vue":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _filterForm = _interopRequireDefault(require("../components/filterForm.vue"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+var _default = {
+  components: {
+    filterForm: _filterForm.default
+  },
+  name: 'App',
+  data: function data() {
+    return {
+      profiles: []
+    };
+  },
+  methods: {
+    load_profiles: function load_profiles(url) {
+      return new Promise(function (resolve, reject) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', url);
+
+        xhr.onload = function () {
+          if (xhr.status === 200) {
+            var data = JSON.parse(xhr.responseText);
+            resolve(data);
+          } else {
+            reject(Error(xhr.statusText));
+          }
+        };
+
+        xhr.onerror = function () {
+          reject(Error("network error"));
+        };
+
+        xhr.send();
+      });
+    }
+  },
+  created: function created() {
+    var _this = this;
+
+    this.load_profiles("https://randomuser.me/api/?results=50").then(function (value) {
+      console.log("checked");
+      _this.profiles = value.results;
+    }).catch(function (err) {
+      console.log(err);
+    });
+  },
+  watch: {}
+};
+exports.default = _default;
+        var $6c44b4 = exports.default || module.exports;
+      
+      if (typeof $6c44b4 === 'function') {
+        $6c44b4 = $6c44b4.options;
+      }
+    
+        /* template */
+        Object.assign($6c44b4, (function () {
+          var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "container-fluid" }, [
+    _c("div", { staticClass: "row" }, [
+      _c(
+        "div",
+        { staticClass: "col-12" },
+        [
+          _vm.profiles !== null
+            ? _c("filter-form", { attrs: { profiles: _vm.profiles } })
+            : _vm._e()
+        ],
+        1
+      )
+    ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+          return {
+            render: render,
+            staticRenderFns: staticRenderFns,
+            _compiled: true,
+            _scopeId: null,
+            functional: undefined
+          };
+        })());
+      
+    /* hot reload */
+    (function () {
+      if (module.hot) {
+        var api = require('vue-hot-reload-api');
+        api.install(require('vue'));
+        if (api.compatible) {
+          module.hot.accept();
+          if (!module.hot.data) {
             api.createRecord('$6c44b4', $6c44b4);
           } else {
             api.reload('$6c44b4', $6c44b4);
@@ -27498,7 +27715,7 @@ render._withStripped = true
         
       }
     })();
-},{"vue-hot-reload-api":"../node_modules/vue-hot-reload-api/dist/index.js","vue":"../node_modules/vue/dist/vue.runtime.esm.js"}],"js/main.js":[function(require,module,exports) {
+},{"../components/filterForm.vue":"components/filterForm.vue","vue-hot-reload-api":"../node_modules/vue-hot-reload-api/dist/index.js","vue":"../node_modules/vue/dist/vue.runtime.esm.js"}],"js/main.js":[function(require,module,exports) {
 "use strict";
 
 require("popper.js");
@@ -27549,7 +27766,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54054" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52363" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
