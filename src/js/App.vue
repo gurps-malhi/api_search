@@ -45,7 +45,6 @@ name: 'App',
   created:function(){
      this.load_profiles("https://randomuser.me/api/?results=50")
      .then((value)=> {
-       console.log("checked");
        this.profiles = value.results;
      })
      .catch ((err) => {

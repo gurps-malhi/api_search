@@ -27626,7 +27626,6 @@ var _default = {
     var _this = this;
 
     this.load_profiles("https://randomuser.me/api/?results=50").then(function (value) {
-      console.log("checked");
       _this.profiles = value.results;
     }).catch(function (err) {
       console.log(err);
@@ -27742,7 +27741,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63820" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65445" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
