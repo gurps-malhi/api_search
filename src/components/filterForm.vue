@@ -4,14 +4,16 @@
       <h2>Refine</h2>
       <form @:submit.prevent>
         <div class="form-group">
-          <label for="Name"><strong>Name:</strong></label>
+          <label for="Name" class="d-block"><strong>Name:</strong></label>
+          
           <input
             class="form-control"
             name="Name"
             type="text"
             v-model="search_name"
-            @blur="new_results"
+            @blur="new_results"  
           />
+         
         </div>
         <div class="form-group">
           <label for="age"><strong>Age:</strong></label>
@@ -102,6 +104,10 @@
 </template>
 
 <script>
+let start_no = 0;
+let end_no = 0;
+let first_name,last_name,full_name = ""
+let has_name;
 export default {
     props: [
         'profiles',
@@ -131,27 +137,26 @@ data() {
           return this.age_groups;
     },
     reset(){
+      console.log(this.foo);
       this.search_age = -1;
       this.search_name = " ";
       this.search_gen = "all-gen";
       this.new_results();
     },
     new_results(){
-        let start_no = 0;
-        let end_no = 0;
-        let first_name,last_name,full_name = ""
-        let has_name;
+      
+        first_name,last_name,full_name = ""
+        has_name;
         this.filtered_prof = [];
 
         if(typeof this.search_age !== "number"){
-          let str = this.search_age;
-          str = str.split("-");
+          start_no = 0;
+          end_no = 0;
+          let str = this.search_age.split("-");
           start_no = str[0];
           end_no = str[1];
         }
-
-        for(let i=0; i< this.profiles.length; i++){
-          
+        for(let i=0; i< this.profiles.length; i++){        
           first_name = this.profiles[i].name.first.toLowerCase();
           last_name = this.profiles[i].name.last.toLowerCase();
           
@@ -166,6 +171,11 @@ data() {
         }
         this.num_results = this.filtered_prof.length;  
     },
+  },
+  computed:{
+    ageChanged(){
+      return this.search_age +  "pass";
+    }
   },
    mounted(){    
     this.age_range(5,10);
