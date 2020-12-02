@@ -30180,6 +30180,24 @@ exports.default = void 0;
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 var start_no = 0;
 var end_no = 0;
 var first_name,
@@ -30187,7 +30205,7 @@ var first_name,
     full_name = "";
 var has_name;
 var _default = {
-  props: ['profiles'],
+  props: ["profiles"],
   data: function data() {
     return {
       age_groups: [],
@@ -30199,28 +30217,35 @@ var _default = {
     };
   },
   methods: {
-    age_range: function age_range(filt_group_tot, inc_by) {
+    //dynamically generated based on max age and inc_by var
+    age_range: function age_range(inc_by) {
+      var _this = this;
+
       var start_no = 0;
       var end_no = 0;
+      var oldest_person = 0;
+      setTimeout(function () {
+        oldest_person = Math.max.apply(Math, _this.profiles.map(function (people) {
+          return people.dob.age;
+        }));
 
-      for (var i = 0; i < filt_group_tot; i++) {
-        end_no = start_no + inc_by;
-        this.age_groups.push(start_no + "-" + end_no);
-        start_no = start_no + inc_by;
-      }
+        while (start_no < oldest_person) {
+          end_no = start_no + inc_by;
 
+          _this.age_groups.push(start_no + 1 + "-" + end_no);
+
+          start_no = start_no + inc_by;
+        }
+      }, 1000);
       return this.age_groups;
     },
     reset: function reset() {
-      console.log(this.foo);
       this.search_age = -1;
       this.search_name = " ";
       this.search_gen = "all-gen";
       this.new_results();
     },
     new_results: function new_results() {
-      first_name, last_name, full_name = "";
-      has_name;
       this.filtered_prof = [];
 
       if (typeof this.search_age !== "number") {
@@ -30251,7 +30276,7 @@ var _default = {
     }
   },
   mounted: function mounted() {
-    this.age_range(5, 10);
+    this.age_range(10);
   },
   watch: {
     profiles: function profiles(val) {
@@ -30359,9 +30384,7 @@ exports.default = _default;
                     { key: index, domProps: { value: age_group } },
                     [
                       _vm._v(
-                        "\r\n              " +
-                          _vm._s(age_group) +
-                          "\r\n            "
+                        "\n            " + _vm._s(age_group) + "\n          "
                       )
                     ]
                   )
@@ -30470,11 +30493,11 @@ exports.default = _default;
       [
         _c("div", { staticClass: "prof_number font-weight-bold mb-2" }, [
           _vm._v(
-            "\r\n            " +
+            "\n      " +
               _vm._s(_vm.num_results) +
               " of " +
               _vm._s(_vm.profiles.length) +
-              "\r\n          "
+              "\n    "
           )
         ]),
         _vm._v(" "),
@@ -30501,9 +30524,11 @@ exports.default = _default;
                       [
                         _c("h2", { staticClass: "main_name" }, [
                           _vm._v(
-                            _vm._s(prof.name.first) +
+                            "\n              " +
+                              _vm._s(prof.name.first) +
                               " " +
-                              _vm._s(prof.name.last)
+                              _vm._s(prof.name.last) +
+                              "\n            "
                           )
                         ])
                       ]
@@ -30517,9 +30542,7 @@ exports.default = _default;
                       },
                       [
                         _c("span", [_vm._v("Age:")]),
-                        _vm._v(
-                          " " + _vm._s(prof.dob.age) + "\r\n              "
-                        )
+                        _vm._v(" " + _vm._s(prof.dob.age) + "\n          ")
                       ]
                     ),
                     _vm._v(" "),
@@ -30531,7 +30554,7 @@ exports.default = _default;
                       },
                       [
                         _c("span", [_vm._v("Gender:")]),
-                        _vm._v(" " + _vm._s(prof.gender) + "\r\n              ")
+                        _vm._v(" " + _vm._s(prof.gender) + "\n          ")
                       ]
                     ),
                     _vm._v(" "),
@@ -30558,7 +30581,7 @@ exports.default = _default;
           : _c("div", { staticClass: "text-center mt-5" }, [
               _c("h1", [
                 _vm._v(
-                  "Unfortunately, no results were found, please change search critera."
+                  "\n        Unfortunately, no results were found, please change search critera.\n      "
                 )
               ])
             ])
@@ -32225,7 +32248,7 @@ var _default = {
     return apiCall.get('https://randomuser.me/api/?results=50');
   },
   getProfile20: function getProfile20() {
-    return apiCall.get('https://randomuser.me/api/?results=20');
+    return apiCall.get('https://randomuser.me/api/?results=2');
   }
 };
 exports.default = _default;
@@ -32483,7 +32506,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49291" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54882" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
