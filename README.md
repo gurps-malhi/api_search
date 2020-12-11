@@ -6,7 +6,7 @@ Using randomuser api to filter searches, primary focus was creating something us
 
 Api request is made to [Randomuser.me api](https://randomuser.me/api/?results=50).
 
-Onload, a fresh request is made to randomuser api via an ajax request, once we have the dataset, you can filter the results, filtering does not make a new ajax request. This was done intentionally as I wanted the filtering process to happen client side.
+Onload, a fresh request is made to randomuser api via an ajax request using axios, once we have the dataset, you can filter the results, filtering does not make a new ajax request. This was done intentionally as I wanted the filtering process to happen client side.
 
 ### Filters
 - The name filter lets a user type in text and if any of the characters match a profile, it returns a result.
